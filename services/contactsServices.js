@@ -5,7 +5,7 @@ import path from "path";
 
 const contactsPath = path.resolve("db", "contacts.json");
 
-const updateListContacts = (contacts) =>
+export const updateListContacts = (contacts) =>
   fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
 
 export async function listContacts() {
@@ -29,7 +29,7 @@ export async function removeContact(id) {
   return res;
 }
 
-export async function addContact(name, email, phone) {
+export async function addContact({ name, email, phone }) {
   const contacts = await listContacts();
   const newContacts = {
     id: nanoid(),
@@ -42,3 +42,20 @@ export async function addContact(name, email, phone) {
 
   return newContacts;
 }
+const updateContact = async (contactId, updatedContactData) => {
+  const contactsArr = await listContacts();
+  const contactIdx = contactsArr.findIndex(({ id }) => contactId === id);
+  if (contactIdx === -1) {
+    return null;
+  }
+
+  const updatedContact = {
+    ...contactsArr[contactIdx],
+    ...updatedContactData,
+  };
+
+  contactsArr[contactIdx] = updatedContact;
+  await updateContactsFile(contactsArr);
+
+  return updatedContact;
+};
