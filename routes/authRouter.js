@@ -5,6 +5,8 @@ import {
   logout,
   getCurrentUser,
   updateAvatar,
+  verifyUser,
+  resendVerificationEmail,
 } from "../controllers/authControllers.js";
 import { authenticate } from "../middlewares/authenticate.js";
 import multer from "multer";
@@ -23,5 +25,7 @@ authRouter.patch(
   upload.single("avatar"),
   updateAvatar
 );
+authRouter.get("/verify/:verificationToken", verifyUser);
+authRouter.post("/verify", resendVerificationEmail);
 
 export default authRouter;
